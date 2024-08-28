@@ -18,12 +18,10 @@ import org.springframework.stereotype.Service;
 public class MailService {
 
     private final JavaMailSender mailSender;
-//    private final MailContentBuilder mailContentBuilder;
-    @Value("${spring.mail.username}")
-    private final String sender;
-
+//    private final MailContentBuilder mailContentBuilder
     @Value("${spring.mail.username}")
     private String sender;
+
     @Async
     void sendMail(NotificationEmail notificationEmail) throws Exception {
         MimeMessagePreparator messagePreparator = mimeMessage -> {

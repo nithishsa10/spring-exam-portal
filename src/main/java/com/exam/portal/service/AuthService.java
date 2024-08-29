@@ -66,6 +66,7 @@ public class AuthService {
         String email = verificationToken.getUser().getEmail();
         User user = userRepository.findByEmail(email).orElseThrow(() -> new EnableTokenException("User is not Founded " + email));
         user.setEnabled(true);
+        verificationTokenRepository.delete(verificationToken);
         userRepository.save(user);
     }
 }

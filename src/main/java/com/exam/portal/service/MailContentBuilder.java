@@ -1,13 +1,14 @@
 package com.exam.portal.service;
 
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class MailContentBuilder {
     private final TemplateEngine templateEngine;
 

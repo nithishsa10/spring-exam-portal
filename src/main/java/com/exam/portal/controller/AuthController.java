@@ -3,10 +3,8 @@ package com.exam.portal.controller;
 import com.exam.portal.dto.RegisterRequest;
 import com.exam.portal.service.AuthService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -20,4 +18,9 @@ public class AuthController {
         authService.save(registerRequest);
     }
 
+    @GetMapping("/accountVerification/{token}")
+    public String enableAccount(@PathVariable String token) {
+        authService.enableAccount(token);
+        return "Account is Enabled";
+    }
 }

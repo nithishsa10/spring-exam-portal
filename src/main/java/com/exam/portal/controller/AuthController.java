@@ -1,5 +1,6 @@
 package com.exam.portal.controller;
 
+import com.exam.portal.dto.LoginRequest;
 import com.exam.portal.dto.RegisterRequest;
 import com.exam.portal.service.AuthService;
 import lombok.RequiredArgsConstructor;
@@ -7,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/api/auth")
 @RequiredArgsConstructor
 public class AuthController {
 
@@ -22,5 +23,10 @@ public class AuthController {
     public String enableAccount(@PathVariable String token) {
         authService.enableAccount(token);
         return "Account is Enabled";
+    }
+
+    @PostMapping("/login")
+    public void login(@RequestBody LoginRequest loginRequest) {
+        authService.login(loginRequest);
     }
 }

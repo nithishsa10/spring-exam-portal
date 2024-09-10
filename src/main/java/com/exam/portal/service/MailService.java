@@ -1,7 +1,6 @@
 package com.exam.portal.service;
 
 import com.exam.portal.model.NotificationEmail;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;

@@ -1,5 +1,6 @@
 package com.exam.portal.service;
 
+import com.exam.portal.dto.LoginRequest;
 import com.exam.portal.dto.RegisterRequest;
 import com.exam.portal.exception.EnableTokenException;
 import com.exam.portal.model.NotificationEmail;
@@ -68,5 +69,9 @@ public class AuthService {
         user.setEnabled(true);
         verificationTokenRepository.delete(verificationToken);
         userRepository.save(user);
+    }
+
+    public void login(LoginRequest loginRequest) {
+
     }
 }

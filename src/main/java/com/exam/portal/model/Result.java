@@ -16,6 +16,6 @@ public class Result {
     private Long userId;
     private Integer ObtainedMark;
     private String attemptDateTime;
-    @ManyToMany
+    @ManyToOne
     private Quiz quiz;
 }

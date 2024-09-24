@@ -1,5 +1,6 @@
 package com.exam.portal.service;
 
+import com.exam.portal.dto.AuthResponse;
 import com.exam.portal.dto.LoginRequest;
 import com.exam.portal.dto.RegisterRequest;
 import com.exam.portal.exception.EnableTokenException;
@@ -13,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -27,6 +29,7 @@ public class AuthService {
     private final UserRepository userRepository;
     private final MailService mailService;
     private final VerificationTokenRepository verificationTokenRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Async
     public void save(RegisterRequest registerRequest) throws Exception {
@@ -39,13 +42,14 @@ public class AuthService {
         set.add(new Role("USER"));
         user.setRoles(set);
         user.setEmail(registerRequest.email());
-        user.setPassword(registerRequest.password());
+        user.setName(registerRequest.name());
+        user.setPassword(passwordEncoder.encode(registerRequest.password()));
         userRepository.save(user);
         String token = generateVerificationToken(user);
         mailService.sendMail(new NotificationEmail("Please Activate your Account", user.getEmail(),
                 "Thank you for signing up to exam portal, \n" +
                         "please click on the below url to activate your account : \n" +
-                        "http://localhost:8080/api/v1/accountVerification/" + token));
+                        "http://localhost:8080/api/auth/accountVerification/" + token));
     }
 
     private String generateVerificationToken(User user) {
@@ -53,7 +57,6 @@ public class AuthService {
         VerificationToken verificationToken = new VerificationToken();
         verificationToken.setToken(token);
         verificationToken.setUser(user);
-
         verificationTokenRepository.save(verificationToken);
         return token;
     }
@@ -71,7 +74,7 @@ public class AuthService {
         userRepository.save(user);
     }
 
-    public void login(LoginRequest loginRequest) {
-
+    public AuthResponse login(LoginRequest loginRequest) {
+        return null;
     }
 }

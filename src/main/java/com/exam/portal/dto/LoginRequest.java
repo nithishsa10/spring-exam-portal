@@ -1,4 +1,4 @@
 package com.exam.portal.dto;
 
-public record LoginRequest() {
+public record LoginRequest(String email, String password) {
 }

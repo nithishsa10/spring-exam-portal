@@ -1,4 +1,15 @@
 package com.exam.portal.dto;
 
-public record AuthResponse() {
+import lombok.Builder;
+
+import java.time.Instant;
+
+
+@Builder
+public record AuthResponse(
+        String authenticationToken,
+        String referToken,
+        Instant expiresAt,
+        String username
+        ) {
 }

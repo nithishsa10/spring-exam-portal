@@ -10,13 +10,21 @@ import com.exam.portal.model.User;
 import com.exam.portal.model.VerificationToken;
 import com.exam.portal.repository.UserRepository;
 import com.exam.portal.repository.VerificationTokenRepository;
+import com.exam.portal.security.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.UUID;
@@ -30,6 +38,8 @@ public class AuthService {
     private final MailService mailService;
     private final VerificationTokenRepository verificationTokenRepository;
     private final PasswordEncoder passwordEncoder;
+    private final AuthenticationManager authenticationManager;
+    private final JwtProvider jwtProvider;
 
     @Async
     public void save(RegisterRequest registerRequest) throws Exception {
@@ -38,9 +48,7 @@ public class AuthService {
             throw new Exception("User Already Exist");
         }
         User user = new User();
-        HashSet<Role> set = new HashSet<>();
-        set.add(new Role("USER"));
-        user.setRoles(set);
+        user.setRoles(Role.USER);
         user.setEmail(registerRequest.email());
         user.setName(registerRequest.name());
         user.setPassword(passwordEncoder.encode(registerRequest.password()));
@@ -70,11 +78,23 @@ public class AuthService {
         String email = verificationToken.getUser().getEmail();
         User user = userRepository.findByEmail(email).orElseThrow(() -> new EnableTokenException("User is not Founded " + email));
         user.setEnabled(true);
-        verificationTokenRepository.delete(verificationToken);
+//        verificationTokenRepository.delete(verificationToken);
         userRepository.save(user);
     }
 
     public AuthResponse login(LoginRequest loginRequest) {
-        return null;
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        loginRequest.email(),
+                        loginRequest.password()
+                )
+        );
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        String token = jwtProvider.generateToken(authentication);
+        return AuthResponse.builder()
+                .authenticationToken(token)
+                .expiresAt(Instant.now().plus(1, ChronoUnit.HALF_DAYS))
+                .username(loginRequest.email())
+                .build();
     }
 }
